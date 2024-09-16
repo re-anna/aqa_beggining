@@ -20,26 +20,26 @@ public class SimpleTest {
     }
 
     @Test
-
-    //сериализация из JSON в объект и наоборот
     public void createStudent(){
-        Student student = new Student("Николай Иванов", 5);
-        StudentRequests.createStudent(student.toJSON());
-
+        Student student = new Student("Николай Иванов", 2, "");
+        StudentRequests.createStudent(student);
     }
 
     @Test
     public void deleteExistingStudent(){
 
         //создаем юзера
-        Student student = new Student("Ирина Михайлова",4);
-       String id = StudentRequests.createStudent(student.toJSON());
+        Student student = new Student("Ирина Михайлова",4, "");
+       Student createdStudent = StudentRequests.createStudent(student);
+
+       //создание через билдер
+       // Student student1 = Student.builder().name("Ира Николаева").grade(1).build();
 
         //удаляем юзера
-        StudentRequests.deleteStudents(id);
+        StudentRequests.deleteStudents(createdStudent.getId());
 
         // проверить что юзер больше не существует
-        given().get("/student/" + id)
+        given().get("/student/" + createdStudent.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
