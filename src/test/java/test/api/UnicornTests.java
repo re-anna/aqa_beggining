@@ -15,7 +15,7 @@ public class UnicornTests {
     @BeforeAll
     public static void setupTests(){
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-        RestAssured.baseURI = "https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330";
+        RestAssured.baseURI = "https://crudcrud.com/api/e181781a9d6a4c55a493969f8ac8c577";
     }
 
     @Test

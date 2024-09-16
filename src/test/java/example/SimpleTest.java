@@ -1,6 +1,7 @@
 package example;
 
 import example.api.StudentRequests;
+import example.api.models.Student;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -15,13 +16,15 @@ public class SimpleTest {
     @BeforeAll
     public static void setupTests(){
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-        RestAssured.baseURI = "https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330";
+        RestAssured.baseURI = "https://crudcrud.com/api/e181781a9d6a4c55a493969f8ac8c577";
     }
 
     @Test
-    public void createStudent(){
 
-        StudentRequests.createStudent("\n" + "{\n" + "  \"name\": \"Иван\",\n" + "  \"grade\": 4\n" + "}");
+    //сериализация из JSON в объект и наоборот
+    public void createStudent(){
+        Student student = new Student("Николай Иванов", 5);
+        StudentRequests.createStudent(student.toJSON());
 
     }
 
@@ -29,7 +32,8 @@ public class SimpleTest {
     public void deleteExistingStudent(){
 
         //создаем юзера
-       String id = StudentRequests.createStudent("\n" + "{\n" + "  \"name\": \"Мария Михайлова\",\n" + "  \"grade\": 5\n" + "}");
+        Student student = new Student("Ирина Михайлова",4);
+       String id = StudentRequests.createStudent(student.toJSON());
 
         //удаляем юзера
         StudentRequests.deleteStudents(id);
