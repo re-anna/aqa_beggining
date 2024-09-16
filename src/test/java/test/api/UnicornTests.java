@@ -3,13 +3,12 @@ package test.api;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.equalTo;
 
 public class UnicornTests {
 
@@ -21,44 +20,43 @@ public class UnicornTests {
 
     @Test
     public void createUnicorn(){
-        given()
-                .body("{\n" + "  \"name\": \"SkyFall \",\n" + "  \"hair_color\": \"Night\"\n" + "}")
-                .contentType(ContentType.JSON)
-                .post("https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330/unicorns")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_CREATED)
-                .body("$", hasKey("_id"));
+
+        UnicornRequests.createUnicorn("{\n" + "  \"name\": \"SkyFall \",\n" + "  \"hair_color\": \"Night\"\n" + "}");
     }
 
+    @Test
+    public void updateHairUnicorn() {
+        // создание единорога
+        String id = UnicornRequests.createUnicorn("{\n" + "  \"name\": \"SkyFall\",\n" + "  \"hair_color\": \"Night\"\n" + "}");
+
+        // обновление цвета волос
+        UnicornRequests.updateHairUnicorn(id, "Rainbow");
+
+        // проверка, что цвет волос изменён
+        given()
+                .get("/unicorns/" + id)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .body("hair_color", equalTo("Rainbow"));
+    }
 
     @Test
     public void deleteUnicorn(){
 
         // создание единорога
-       String id = given()
-                .body("{\n" + "  \"name\": \"SkyFall \",\n" + "  \"hair_color\": \"Night\"\n" + "}")
-                .contentType(ContentType.JSON)
-                .post("https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330/unicorns")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_CREATED)
-                .body("$", hasKey("_id"))
-                .extract().path("_id");
+       String id = UnicornRequests.createUnicorn("{\n" + "  \"name\": \"SkyFall \",\n" + "  \"hair_color\": \"Night\"\n" + "}");
 
         // удаление единорога
-        given().delete("https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330/unicorns/" + id)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_OK);
-
+       UnicornRequests.deleteUnicorn(id);
 
         // проверка, что единорога удалили
         given()
-                .get("https://crudcrud.com/api/cbb0ae2e39f9429ea650bab05298a330/unicorns/" + id)
+                .get("/unicorns/" + id)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
-}
+    }
+
