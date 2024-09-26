@@ -19,6 +19,7 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.codeborne:selenide:7.2.1")
 
 
 
