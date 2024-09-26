@@ -48,9 +48,11 @@ public class SimpleUITest {
         SelenideElement passwordConfirm = element((Selectors.byId("repeatedPassword")));
         passwordConfirm.sendKeys("dsfhdkjfh");
 
+        SelenideElement registerButton = element(Selectors.byValue("Register"));
+        registerButton.click();
 
-
-
+        SelenideElement registerFinished = element(Selectors.byId("rightPanel"));
+        registerFinished.shouldHave(Condition.exactText("Your account was created successfully. You are now logged in."));
     }
 
     @Test
